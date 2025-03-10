@@ -29,7 +29,7 @@
 #define MICROPY_INCLUDED_ESP32_MACHINE_RTC_H
 
 #include "modmachine.h"
-
+#if 0
 typedef struct {
     uint64_t ext1_pins; // set bit == pin#
     int8_t ext0_pin;   // just the pin#, -1 == None
@@ -39,7 +39,25 @@ typedef struct {
     wake_type_t ext0_wake_types;
     bool ext1_level : 1;
 } machine_rtc_config_t;
-
+#else
+typedef struct {
+    #if SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP  
+    uint64_t gpio_pins; // set bit == pin#
+    uint64_t gpio_level;// set bit == wake up when the gpio turn to low=ESP_GPIO_WAKEUP_GPIO_LOW,ESP_GPIO_WAKEUP_GPIO_HIGH
+    #endif
+    #if SOC_PM_SUPPORT_EXT0_WAKEUP || SOC_PM_SUPPORT_EXT1_WAKEUP
+    bool ext0_level : 1;
+    int8_t ext0_pin;   // just the pin#, -1 == None
+    wake_type_t ext0_wake_types;
+    uint64_t ext1_pins; // set bit == pin#
+    bool ext1_level : 1;
+    #endif
+    bool wake_on_touch : 1;
+    #if SOC_ULP_SUPPORTED
+    bool wake_on_ulp : 1;
+    #endif
+} machine_rtc_config_t;
+#endif
 extern machine_rtc_config_t machine_rtc_config;
 
 #endif
