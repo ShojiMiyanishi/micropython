@@ -42,6 +42,8 @@ def get_version_info_from_git(repo_path):
         if len(git_tag) == 1:
             return git_tag[0]
         else:
+            git_tag[1]=git_tag[1].replace("dirty", "touched")
+            # print(f'\n\n\ngit_tag:{git_tag}\nlen(git_tag):{len(git_tag)}\n\n')
             return git_tag[0] + "-" + git_tag[1].replace("-", ".")
     except (subprocess.CalledProcessError, OSError):
         return None
